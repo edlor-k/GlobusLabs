@@ -10,6 +10,8 @@ import java.util.Map;
 /**
  * Тело ответа при обработке исключений.
  * Используется в {@link GlobalExceptionHandler}.
+ *
+ * @author Vladlen Korablev
  */
 @Data
 @AllArgsConstructor

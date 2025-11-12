@@ -9,6 +9,8 @@ import ru.globus.model.entity.User;
 
 /**
  * DTO-запрос для создания или обновления пользователя.
+ *
+ * @author Vladlen Korablev
  */
 @Schema(description = "Запрос на создание или обновление пользователя")
 public record UserRequestDto(

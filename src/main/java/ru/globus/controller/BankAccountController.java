@@ -20,6 +20,8 @@ import java.util.UUID;
 
 /**
  * Контроллер для управления банковскими счетами.
+ *
+ * @author Vladlen Korablev
  */
 @RestController
 @RequestMapping("/accounts")

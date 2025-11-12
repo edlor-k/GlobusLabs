@@ -1,6 +1,8 @@
 spring:
   application:
     name: ${SPRING_APPLICATION_NAME:GlobusProject}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:docker,real-scheduler}
 
   datasource:
     driver-class-name: org.postgresql.Driver

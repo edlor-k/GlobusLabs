@@ -7,6 +7,11 @@ import ru.globus.model.enums.CurrencyCode;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Сущность для хранения данных о валюте
+ *
+ * @author Vladlen Korablev
+ */
 @Getter
 @Setter
 @Entity

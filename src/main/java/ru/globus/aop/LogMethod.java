@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * Аннотация для логирования"
+ *
+ * @author Vladlen Korablev
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

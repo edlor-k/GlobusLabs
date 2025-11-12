@@ -1,8 +1,6 @@
 package ru.globus.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +12,8 @@ import java.util.UUID;
 /**
  * Сущность пользователя системы.
  * Содержит персональные данные и список связанных банковских счетов.
+ *
+ * @author Vladlen Korablev
  */
 @Getter
 @Setter

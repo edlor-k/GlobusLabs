@@ -2,6 +2,8 @@ package ru.globus.exception;
 
 /**
  * Исключение для случая дублирования email.
+ *
+ * @author Vladlen Korablev
  */
 public class UserAlreadyExistException extends RuntimeException {
 

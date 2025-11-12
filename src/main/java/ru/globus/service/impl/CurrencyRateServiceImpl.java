@@ -29,30 +29,51 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
      */
     @Override
     public void saveRates(Map<CurrencyCode, BigDecimal> rates, LocalDate date) {
-        rates.forEach((code, value) -> currencyRateRepository.findByCurrencyCodeAndRateDate(code, date)
-                .ifPresentOrElse(
-                    existing -> log.debug("Курс {} за {} уже существует", code, date),
-                    () -> {
-                        CurrencyRate rate = CurrencyRate.builder()
-                            .currencyCode(code)
-                            .rate(value)
-                            .rateDate(date)
-                            .build();
-                        currencyRateRepository.save(rate);
-                        log.info("Добавлен курс {} = {} за {}", code, value, date);
-                    }
-                ));
+        rates.forEach((code, newRateValue) -> {
+            currencyRateRepository.findTopByCurrencyCodeOrderByRateDateDesc(code)
+                    .ifPresentOrElse(
+                            existing -> {
+                                if (existing.getRateDate().isEqual(date) &&
+                                        existing.getRate().compareTo(newRateValue) == 0) {
+                                    log.debug("Актуальный курс {} уже сохранён: {} за {}", code, newRateValue, date);
+                                } else {
+                                    CurrencyRate updated = CurrencyRate.builder()
+                                            .currencyCode(code)
+                                            .rate(newRateValue)
+                                            .rateDate(date)
+                                            .build();
+                                    currencyRateRepository.save(updated);
+                                    log.info("Обновлён курс {} = {} за {}", code, newRateValue, date);
+                                }
+                            },
+                            () -> {
+                                CurrencyRate created = CurrencyRate.builder()
+                                        .currencyCode(code)
+                                        .rate(newRateValue)
+                                        .rateDate(date)
+                                        .build();
+                                currencyRateRepository.save(created);
+                                log.info("Добавлен новый курс {} = {} за {}", code, newRateValue, date);
+                            }
+                    );
+        });
     }
+
 
     @Override
     public BigDecimal getConversionRate(CurrencyCode from, CurrencyCode to, LocalDate date) {
-        if (from == to) {
-            return BigDecimal.ONE;
-        }
+        if (from == to) return BigDecimal.ONE;
+
+        LocalDate yesterday = date.minusDays(1);
+
         var rateFrom = currencyRateRepository.findByCurrencyCodeAndRateDate(from, date)
-            .orElseThrow(() -> new ValidationException("Курс для валюты " + from + " на дату " + date + " не найден"));
+            .or(() -> currencyRateRepository.findByCurrencyCodeAndRateDate(from, yesterday))
+            .orElseThrow(() -> new ValidationException("Курс для валюты " + from + " не найден за " + date + " и " + yesterday));
+
         var rateTo = currencyRateRepository.findByCurrencyCodeAndRateDate(to, date)
-            .orElseThrow(() -> new ValidationException("Курс для валюты " + to + " на дату " + date + " не найден"));
-        return rateTo.getRate().divide(rateFrom.getRate(), 6, RoundingMode.HALF_UP);
+            .or(() -> currencyRateRepository.findByCurrencyCodeAndRateDate(to, yesterday))
+            .orElseThrow(() -> new ValidationException("Курс для валюты " + to + " не найден за " + date + " и " + yesterday));
+
+        return rateFrom.getRate().divide(rateTo.getRate(), 6, RoundingMode.HALF_UP);
     }
 }

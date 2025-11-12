@@ -9,6 +9,8 @@ import java.util.UUID;
 
 /**
  * DTO, представляющий банковский счёт в ответах API.
+ *
+ * @author Vladlen Korablev
  */
 @Schema(description = "Ответ с информацией о банковском счёте")
 public record BankAccountResponseDto(

@@ -13,6 +13,8 @@ import ru.globus.exception.*;
 /**
  * Глобальный обработчик ошибок приложения.
  * Обеспечивает централизованную обработку исключений и возврат понятных HTTP-ответов.
+ *
+ * @author Vladlen Korablev
  */
 @Slf4j
 @RestControllerAdvice

@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Конфигурация Swagger/OpenAPI
+ *
+ * @author Vladlen Korablev
  */
 @Configuration
 public class SwaggerConfig {

@@ -11,6 +11,8 @@ import java.util.UUID;
 
 /**
  * DTO для создания или обновления банковского счёта.
+ *
+ * @author Vladlen Korablev
  */
 @Schema(description = "Запрос на создание или обновление банковского счёта")
 public record BankAccountRequestDto(

@@ -10,6 +10,8 @@ import ru.globus.model.entity.User;
 /**
  * Маппер для преобразования между сущностью BankAccount и DTO-классами.
  * Используется библиотека MapStruct, реализация создаётся автоматически при компиляции.
+ *
+ * @author Vladlen Korablev
  */
 @Mapper(componentModel = "spring")
 public interface BankAccountMapper {
@@ -28,7 +30,6 @@ public interface BankAccountMapper {
      * @return новая сущность BankAccount
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", source = "user")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     BankAccount toEntity(BankAccountRequestDto dto, User user);

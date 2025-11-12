@@ -13,6 +13,8 @@ import java.util.UUID;
  * Маппер для преобразования между сущностью User
  * и DTO-классами UserRequestDto и UserResponseDto.
  * Используется библиотека MapStruct, реализация генерируется во время компиляции.
+ *
+ * @author Vladlen Korablev
  */
 @Mapper(componentModel = "spring")
 public interface UserMapper {

@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 /**
  * Аспект для централизованного логирования вызовов методов,
  * * помеченных аннотацией {@link LogMethod}.
+ *
+ * @author Vladlen Korablev
  */
 @Aspect
 @Component

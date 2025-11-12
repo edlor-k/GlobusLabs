@@ -4,7 +4,10 @@ import lombok.Getter;
 
 import java.util.Map;
 
-/** Бизнес-валидация входных данных (возвращаем 400). */
+/** Бизнес-валидация входных данных (возвращаем 400).
+ *
+ * @author Vladlen Korablev
+ * */
 @Getter
 public class ValidationException extends RuntimeException {
     private final Map<String, String> errors;

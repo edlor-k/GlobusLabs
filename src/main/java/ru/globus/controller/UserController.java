@@ -19,6 +19,8 @@ import java.util.UUID;
 
 /**
  * Контроллер для управления пользователями.
+ *
+ * @author Vladlen Korablev
  */
 @RestController
 @RequestMapping("/users")

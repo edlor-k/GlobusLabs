@@ -119,12 +119,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Transactional
     public void transfer(TransferRequestDto dto) {
         var fromAccount = bankAccountRepository.findById(dto.fromAccountId())
-            .orElseThrow(() -> new BankAccountNotFoundException("Счёт отправителя не найден: " + dto.fromAccountId()));
+                .orElseThrow(() -> new BankAccountNotFoundException("Счёт отправителя не найден: " + dto.fromAccountId()));
         var toAccount = bankAccountRepository.findById(dto.toAccountId())
-            .orElseThrow(() -> new BankAccountNotFoundException("Счёт получателя не найден: " + dto.toAccountId()));
+                .orElseThrow(() -> new BankAccountNotFoundException("Счёт получателя не найден: " + dto.toAccountId()));
 
         if (fromAccount.getBalance().compareTo(dto.amount()) < 0) {
-            throw new IllegalArgumentException("Недостаточно средств на счете отправителя");
+            throw new IllegalArgumentException("Недостаточно средств на счёте отправителя");
         }
 
         if (!fromAccount.getUser().getId().equals(toAccount.getUser().getId())) {
@@ -140,9 +140,16 @@ public class BankAccountServiceImpl implements BankAccountService {
         }
 
         LocalDate today = LocalDate.now();
-        BigDecimal rate = currencyRateService.getConversionRate(fromAccount.getCurrencyCode(), toAccount.getCurrencyCode(), today);
 
-        BigDecimal convertedAmount = dto.amount().multiply(rate).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal crossRate = currencyRateService.getConversionRate(
+                fromAccount.getCurrencyCode(),
+                toAccount.getCurrencyCode(),
+                today
+        );
+
+        BigDecimal convertedAmount = dto.amount()
+                .multiply(crossRate)
+                .setScale(2, RoundingMode.HALF_UP);
 
         fromAccount.withdraw(dto.amount());
         toAccount.deposit(convertedAmount);
@@ -151,10 +158,11 @@ public class BankAccountServiceImpl implements BankAccountService {
         bankAccountRepository.save(toAccount);
 
         log.info(
-            "Перевод {} {} (курс {}) со счёта {} на {} выполнен: {} {}",
-            dto.amount(), fromAccount.getCurrencyCode(), rate,
-            dto.fromAccountId(), dto.toAccountId(),
-            convertedAmount, toAccount.getCurrencyCode()
+                "Перевод {} {} (курс {}) со счёта {} на {} выполнен: {} {}",
+                dto.amount(), fromAccount.getCurrencyCode(), crossRate,
+                dto.fromAccountId(), dto.toAccountId(),
+                convertedAmount, toAccount.getCurrencyCode()
         );
     }
+
 }

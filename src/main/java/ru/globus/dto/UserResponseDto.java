@@ -8,6 +8,8 @@ import java.util.UUID;
 
 /**
  * DTO-ответ с данными о пользователе.
+ *
+ * @author Vladlen Korablev
  */
 @Schema(description = "Ответ с информацией о пользователе")
 public record UserResponseDto(

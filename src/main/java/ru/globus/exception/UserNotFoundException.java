@@ -2,6 +2,8 @@ package ru.globus.exception;
 
 /**
  * Исключение для случая, когда пользователь не найден.
+ *
+ * @author Vladlen Korablev
  */
 public class UserNotFoundException extends RuntimeException{
 

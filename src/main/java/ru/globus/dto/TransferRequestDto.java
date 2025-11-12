@@ -8,6 +8,8 @@ import java.util.UUID;
 
 /**
  * DTO для запроса перевода средств между счетами пользователя.
+ *
+ * @author Vladlen Korablev
  */
 public record TransferRequestDto(
     @NotNull(message = "ID счета отправителя обязателен")
