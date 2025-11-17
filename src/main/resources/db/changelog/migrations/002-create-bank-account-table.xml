@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-bank-account-table" author="Vladlen Korablev">
+        <comment>Создание таблицы пользователей</comment>
+        <createTable tableName="bank_accounts">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bank_accounts"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_number" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="account_number" constraintName="uc_ac9562b7d91d15a6113e9515b" tableName="bank_accounts"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="bank_accounts" constraintName="FK_BANK_ACCOUNTS_ON_USER" referencedColumnNames="id" referencedTableName="users"/>
+        <rollback>
+            <dropTable tableName="bank_accounts"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

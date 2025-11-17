@@ -1,0 +1,19 @@
+CREATE DATABASE bank_db
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'ru_RU.UTF-8'
+    LC_CTYPE = 'ru_RU.UTF-8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+CREATE USER bank_user WITH PASSWORD 'bank_pass';
+
+GRANT ALL PRIVILEGES ON DATABASE bank_db TO bank_user;
+
+\c bank_db
+
+GRANT ALL ON SCHEMA public TO bank_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO bank_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO bank_user;
