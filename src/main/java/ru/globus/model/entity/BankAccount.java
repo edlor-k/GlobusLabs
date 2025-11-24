@@ -23,6 +23,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity

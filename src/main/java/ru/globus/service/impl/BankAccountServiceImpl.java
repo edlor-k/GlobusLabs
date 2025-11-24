@@ -7,12 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.globus.aop.LogMethod;
+import ru.globus.dto.BankAccountEventDto;
 import ru.globus.dto.BankAccountRequestDto;
 import ru.globus.dto.BankAccountResponseDto;
 import ru.globus.dto.TransferRequestDto;
 import ru.globus.exception.BankAccountNotFoundException;
 import ru.globus.exception.UserNotFoundException;
+import ru.globus.kafka.BankAccountEventProducer;
 import ru.globus.mapper.BankAccountMapper;
+import ru.globus.model.entity.BankAccount;
 import ru.globus.repository.BankAccountRepository;
 import ru.globus.repository.UserRepository;
 import ru.globus.service.BankAccountService;
@@ -21,11 +24,14 @@ import ru.globus.service.CurrencyRateService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * Имплементация BankAccountService.
  * Содержит бизнес-логику по управлению банковскими счетами пользователей.
+ *
+ * @author Vladlen Korablev
  */
 @Service
 @Slf4j
@@ -36,6 +42,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final UserRepository userRepository;
     private final BankAccountMapper bankAccountMapper;
     private final CurrencyRateService currencyRateService;
+    private final BankAccountEventProducer eventProducer;
 
     /**
      * Создаёт новый банковский счёт.
@@ -53,6 +60,9 @@ public class BankAccountServiceImpl implements BankAccountService {
 
         var account = bankAccountMapper.toEntity(dto, user);
         var saved = bankAccountRepository.save(account);
+
+        sendBankAccountEvent(saved, BankAccountEventDto.EventType.ACCOUNT_CREATED,
+                "Создан новый банковский счёт");
 
         return bankAccountMapper.toResponseDto(saved);
     }
@@ -94,6 +104,10 @@ public class BankAccountServiceImpl implements BankAccountService {
         }
 
         var updated = bankAccountRepository.save(account);
+
+        sendBankAccountEvent(updated, BankAccountEventDto.EventType.ACCOUNT_UPDATED,
+                "Обновлён банковский счёт");
+
         return bankAccountMapper.toResponseDto(updated);
     }
 
@@ -104,6 +118,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     @LogMethod("account-delete")
     public void delete(UUID id) {
         if (bankAccountRepository.existsById(id)) {
+            var account = bankAccountRepository.findById(id)
+                    .orElseThrow(() -> new BankAccountNotFoundException("Счёт не найден: " + id));
+
+            sendBankAccountEvent(account, BankAccountEventDto.EventType.ACCOUNT_DELETED,
+                    "Банковский счёт удалён");
+
             bankAccountRepository.deleteById(id);
             log.info("Счёт {} успешно удалён", id);
         } else {
@@ -157,12 +177,38 @@ public class BankAccountServiceImpl implements BankAccountService {
         bankAccountRepository.save(fromAccount);
         bankAccountRepository.save(toAccount);
 
+        sendBankAccountEvent(fromAccount, BankAccountEventDto.EventType.TRANSFER_COMPLETED,
+                String.format("Перевод %s %s на счёт %s", dto.amount(), fromAccount.getCurrencyCode(), dto.toAccountId()));
+        sendBankAccountEvent(toAccount, BankAccountEventDto.EventType.BALANCE_CHANGED,
+                String.format("Получен перевод %s %s", convertedAmount, toAccount.getCurrencyCode()));
+
         log.info(
                 "Перевод {} {} (курс {}) со счёта {} на {} выполнен: {} {}",
                 dto.amount(), fromAccount.getCurrencyCode(), crossRate,
                 dto.fromAccountId(), dto.toAccountId(),
                 convertedAmount, toAccount.getCurrencyCode()
         );
+    }
+
+    /**
+     * Вспомогательный метод для отправки событий в Kafka.
+     */
+    private void sendBankAccountEvent(BankAccount account, BankAccountEventDto.EventType eventType, String message) {
+        try {
+            BankAccountEventDto event = BankAccountEventDto.builder()
+                    .eventType(eventType)
+                    .accountId(account.getId())
+                    .userId(account.getUser().getId())
+                    .balance(account.getBalance())
+                    .currency(account.getCurrencyCode())
+                    .timestamp(LocalDateTime.now())
+                    .message(message)
+                    .build();
+
+            eventProducer.sendEvent(event);
+        } catch (Exception e) {
+            log.error("Ошибка при отправке события в Kafka: {}", e.getMessage(), e);
+        }
     }
 
 }

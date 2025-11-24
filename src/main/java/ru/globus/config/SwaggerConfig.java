@@ -17,6 +17,8 @@ public class SwaggerConfig {
      * Создает описание API.
      *
      * @return объект OpenAPI с метаданными сервиса
+     *
+     * @author Vladlen Korablev
      */
     @Bean
     public OpenAPI waiterServiceOpenAPI() {

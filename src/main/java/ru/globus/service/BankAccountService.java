@@ -11,6 +11,8 @@ import java.util.UUID;
 /**
  * Сервисный интерфейс для управления банковскими счетами пользователей.
  * Определяет CRUD-операции и бизнес-логику, связанную с банковскими счетами.
+ *
+ * @author Vladlen Korablev
  */
 public interface BankAccountService {
 

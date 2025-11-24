@@ -8,6 +8,8 @@ import java.util.UUID;
 /**
  * Репозиторий для работы с сущностью User.
  * Содержит базовые CRUD-операции и дополнительные методы поиска.
+ *
+ * @author Vladlen Korablev
  */
 public interface UserRepository extends JpaRepository<User, UUID> {
 

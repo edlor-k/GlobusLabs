@@ -19,6 +19,8 @@ import java.util.UUID;
 /**
  * Имплементация UserService для управления пользователями.
  * Определяет основные операции CRUD и бизнес-логику, связанную с пользователями.
+ *
+ * @author Vladlen Korablev
  */
 @Service
 @Slf4j

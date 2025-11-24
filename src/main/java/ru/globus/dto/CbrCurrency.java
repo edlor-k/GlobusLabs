@@ -7,6 +7,8 @@ import lombok.Setter;
 
 /**
  * Представление отдельной валюты в XML ответе от CBR
+ *
+ * @author Vladlen Korablev
  */
 @Getter
 @Setter

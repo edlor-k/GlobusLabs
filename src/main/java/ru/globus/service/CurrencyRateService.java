@@ -9,6 +9,8 @@ import java.util.Map;
 /**
  * Сервисный интерфейс для работы с сущностью CurrencyRate.
  * Содержит метод сохранения курсов в базу.
+ *
+ * @author Vladlen Korablev
  */
 public interface CurrencyRateService {
 

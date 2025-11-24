@@ -10,6 +10,8 @@ import java.util.UUID;
 /**
  * Сервисный интерфейс для работы с пользователями.
  * Определяет основные операции CRUD и бизнес-логику, связанную с пользователями.
+ *
+ * @author Vladlen Korablev
  */
 public interface UserService {
 

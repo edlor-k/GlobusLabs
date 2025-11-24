@@ -8,6 +8,8 @@ import ru.globus.exception.XmlParsingException;
 
 /**
  * Универсальный XML-парсер, поддерживающий JAXB-аннотации.
+ *
+ * @author Vladlen Korablev
  */
 @Slf4j
 public final class XmlParser {
