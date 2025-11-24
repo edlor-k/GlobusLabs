@@ -6,7 +6,7 @@
 - Пользователь (User)
 - Банковский счёт (BankAccount)
 
-Приложение использует Spring Boot, Spring Data JPA, Liquibase для миграций, OpenFeign для внешних HTTP вызовов и MapStruct для маппинга DTO.
+Приложение использует Spring Boot, Spring Data JPA, Liquibase для миграций, OpenFeign для внешних HTTP вызовов, MapStruct для маппинга DTO и Apache Kafka для обработки событий.
 
 ## Требования
 
@@ -44,6 +44,21 @@ docker compose --env-file .env up -d
 http://localhost:8080/swagger-ui/index.html#/
 ```
 
+5. Kafka UI доступен по адресу:
+
+```
+http://localhost:8090
+```
+
+## Интеграция с Kafka
+
+Приложение использует Apache Kafka для асинхронной обработки событий банковских счетов. Подробная документация доступна в файле [KAFKA_README.md](KAFKA_README.md).
+
+### Основные компоненты:
+- **Producer** - отправляет события при создании, обновлении, удалении счетов и переводах
+- **Consumer** - обрабатывает события из топика
+- **Kafka UI** - веб-интерфейс для мониторинга топиков и сообщений (http://localhost:8090)
+
 ## Структура проекта (ключевые директории)
 
 - `src/main/java` — исходный код приложения
@@ -54,7 +69,8 @@ http://localhost:8080/swagger-ui/index.html#/
     - `model` — JPA сущности и перечисления
     - `dto` — объекты передачи данных
     - `mapper` — MapStruct мапперы
-    - `config` — конфигурация приложения
+    - `config` — конфигурация приложения (включая KafkaConfig)
+    - `kafka` — Producer и Consumer для Apache Kafka
     - `util` — утилитарные классы
 - `src/main/resources` — ресурсы приложения (включая `application.yml` и миграции Liquibase)
 - `src/test/java` — модульные и интеграционные тесты

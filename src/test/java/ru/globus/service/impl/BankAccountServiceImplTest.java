@@ -15,6 +15,7 @@ import ru.globus.dto.BankAccountResponseDto;
 import ru.globus.dto.TransferRequestDto;
 import ru.globus.exception.BankAccountNotFoundException;
 import ru.globus.exception.UserNotFoundException;
+import ru.globus.kafka.BankAccountEventProducer;
 import ru.globus.mapper.BankAccountMapper;
 import ru.globus.model.entity.BankAccount;
 import ru.globus.model.entity.User;
@@ -46,6 +47,9 @@ class BankAccountServiceImplTest {
 
     @Mock
     private CurrencyRateService currencyRateService;
+
+    @Mock
+    private BankAccountEventProducer eventProducer;
 
     @InjectMocks
     private BankAccountServiceImpl bankAccountService;
@@ -171,7 +175,10 @@ class BankAccountServiceImplTest {
 
     @Test
     void delete_ShouldDeleteAccount_WhenExists() {
+        BankAccount account = new BankAccount().setId(accountId).setUser(user);
+
         when(bankAccountRepository.existsById(accountId)).thenReturn(true);
+        when(bankAccountRepository.findById(accountId)).thenReturn(Optional.of(account));
 
         bankAccountService.delete(accountId);
 

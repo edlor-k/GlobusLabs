@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 /**
  * Фейковый шедулер, имитирующий обновление курсов валют.
+ *
+ * @author Vladlen Korablev
  */
 @Slf4j
 @Service

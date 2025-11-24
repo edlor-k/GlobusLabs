@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 /**
  * Планировщик обновления курсов валют с сайта ЦБР.
  * Работает только в профиле "real-scheduler".
+ *
+ * @author Vladlen Korablev
  */
 @Slf4j
 @Service

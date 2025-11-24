@@ -17,6 +17,8 @@ import java.util.Map;
 /**
  * Имплементация CurrencyRateService для управления пользователями.
  * Определяет основные операции CRUD и бизнес-логику, связанную с пользователями.
+ *
+ * @author Vladlen Korablev
  */
 @Service
 @RequiredArgsConstructor

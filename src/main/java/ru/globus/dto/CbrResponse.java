@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * Представление ответа от ЦБР
+ *
+ * @author Vladlen Korablev
  */
 @Getter
 @Setter
